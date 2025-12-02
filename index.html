@@ -1,232 +1,1440 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>Fancy ChatBot</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fancy ChatBot AI</title>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- Highlight.js for code syntax -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-light.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    
+    <style>
+        :root {
+            /* Light theme variables */
+            --header-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --sidebar-bg: #ffffff;
+            --main-bg: #f8fafc;
+            --footer-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-light: #ffffff;
+            --border-color: #e2e8f0;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --hover-color: #f1f5f9;
+            --accent-color: #667eea;
+            --transition-speed: 0.3s;
+            --border-radius: 12px;
+        }
+        
+        /* Dark theme variables */
+        [data-theme="dark"] {
+            --header-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --sidebar-bg: #1e293b;
+            --main-bg: #0f172a;
+            --footer-bg: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-light: #f8fafc;
+            --border-color: #334155;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --hover-color: #334155;
+            --accent-color: #7c3aed;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color var(--transition-speed), 
+                        color var(--transition-speed), 
+                        border-color var(--transition-speed),
+                        opacity var(--transition-speed);
+        }
+        
+        html, body {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            background: var(--main-bg);
+            overflow: hidden;
+        }
+        
+        /* Layout Structure */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: relative;
+        }
+        
+        /* Header */
+        .app-header {
+            height: 70px;
+            background: var(--header-bg);
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.3rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-speed);
+        }
+        
+        .menu-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+        
+        .logo i {
+            font-size: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        /* Theme toggle */
+        .theme-toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 5px;
+            transition: all var(--transition-speed);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .theme-slider {
+            position: absolute;
+            height: 24px;
+            width: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform var(--transition-speed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: #f59e0b;
+        }
+        
+        [data-theme="dark"] .theme-slider {
+            transform: translateX(30px);
+            background: #1e293b;
+            color: #fbbf24;
+        }
+        
+        .theme-icon {
+            position: absolute;
+            font-size: 0.9rem;
+            transition: opacity var(--transition-speed);
+        }
+        
+        .sun-icon {
+            left: 8px;
+            color: #f59e0b;
+        }
+        
+        .moon-icon {
+            right: 8px;
+            color: #cbd5e1;
+        }
+        
+        [data-theme="dark"] .sun-icon {
+            opacity: 0.5;
+        }
+        
+        [data-theme="light"] .moon-icon {
+            opacity: 0.5;
+        }
+        
+        /* Sidebar Menu */
+        .sidebar {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 300px;
+            height: calc(100vh - 70px);
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            box-shadow: 5px 0 15px var(--shadow-color);
+            z-index: 90;
+            transform: translateX(-100%);
+            transition: transform var(--transition-speed);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        .sidebar.open {
+            transform: translateX(0);
+        }
+        
+        .sidebar-overlay {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 80;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--transition-speed), visibility var(--transition-speed);
+        }
+        
+        .sidebar-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Sidebar header removed to simplify menu UI (title/subtitle were intentionally removed) */
+        
+        .sidebar-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .menu-section {
+            margin-bottom: 25px;
+        }
+        
+        .menu-section-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+        
+        .menu-item:hover {
+            background: var(--hover-color);
+            transform: translateX(5px);
+        }
+        
+        .menu-item.active {
+            background: var(--accent-color);
+            color: white;
+        }
+        
+        .menu-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .menu-item-text {
+            flex: 1;
+            font-size: 0.95rem;
+        }
+        
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Main Content */
+        .app-main {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: auto; /* allow horizontal scroll on smaller devices */
+            padding: 0; /* remove outer padding so content sits flush with header/footer */
+            position: relative;
+            transition: filter var(--transition-speed);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-container {
+            max-width: none; /* allow full width */
+            width: 100%;
+            margin: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 0; /* no padding - full width to page edges */
+        }
+        
+        /* Chat Messages */
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2px 2px; /* minimal padding - messages extend nearly to edges */
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        /* Custom scrollbar */
+        .chat-messages::-webkit-scrollbar,
+        .sidebar-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-track,
+        .sidebar-content::-webkit-scrollbar-track {
+            background: var(--main-bg);
+            border-radius: 10px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb,
+        .sidebar-content::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 10px;
+        }
+        
+        /* Message styling */
+        .message {
+            display: flex;
+            animation: fadeIn 0.4s ease-out;
+            max-width: 100%; /* message container uses full available width */
+            align-items: flex-end;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message.bot {
+            align-self: flex-start;
+        }
+        
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse; /* place avatar on the right for user messages */
+        }
+        
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 5px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px var(--shadow-color);
+            font-size: 1.2rem;
+        }
 
-	<!-- Bootstrap -->
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+        /* spacing adjustments for avatars depending on message side */
+        .message.bot .avatar { margin-right: 8px; }
+        .message.user .avatar { margin-left: 8px; }
+        
+        .bot .avatar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .user .avatar {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+        }
+        
+        .bubble {
+            padding: 15px 20px;
+            border-radius: 20px;
+            position: relative;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            line-height: 1.5;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-width: 100%;
+            box-sizing: border-box;
+            word-break: break-word;
+            white-space: normal; /* allow text to wrap inside bubbles */
+        }
+        
+        .bot .bubble {
+            background: var(--sidebar-bg);
+            color: var(--text-primary);
+            border-top-left-radius: 5px;
+            margin-left: 8px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .bot .bubble::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 15px;
+            border-width: 10px 10px 10px 0;
+            border-style: solid;
+            border-color: transparent var(--sidebar-bg) transparent transparent;
+        }
+        
+        .user .bubble {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+            border-top-right-radius: 5px;
+            margin-right: 8px;
+        }
+        
+        .user .bubble::before {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: 15px;
+            border-width: 10px 0 10px 10px;
+            border-style: solid;
+            border-color: transparent transparent transparent #43e97b;
+        }
+        
+        /* Message content styling */
+        .message-content {
+            font-size: 1rem;
+        }
 
-	<!-- Markdown Parser -->
-	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        /* Ensure code blocks and large inline content don't overflow the bubble */
+        .message-content pre,
+        .message-content code,
+        .message-content img,
+        .message-content table {
+            max-width: 100%;
+            box-sizing: border-box;
+        }
 
-	<!-- Highlight.js for code block -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
-	<script>hljs.highlightAll();</script>
+        .message-content pre {
+            white-space: pre-wrap; /* allow wrapping of long code lines */
+            word-break: break-word;
+            overflow-x: auto; /* keep horizontal scroll if still needed */
+        }
+        
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-top: 5px;
+            text-align: right;
+        }
+        
+        /* Typing indicator */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background: var(--sidebar-bg);
+            border-radius: 20px;
+            border-top-left-radius: 5px;
+            width: fit-content;
+            margin-left: 8px; /* slightly reduced to match bubble spacing */
+            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 15px var(--shadow-color);
+        }
+        
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-indicator span:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+        
+        @keyframes typing {
+            0%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+        }
+        
+        /* Footer */
+        .app-footer {
+            height: 90px;
+            background: var(--footer-bg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            padding: 0 25px;
+            gap: 20px;
+            box-shadow: 0 -4px 12px var(--shadow-color);
+            z-index: 100;
+            flex-shrink: 0;
+        }
+        
+        .model-selector {
+            position: relative;
+            min-width: 180px;
+        }
+        
+        .model-dropdown {
+            width: 100%;
+            background: var(--sidebar-bg);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 12px 15px;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+        
+        .model-dropdown:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px var(--shadow-color);
+        }
+        
+        .model-dropdown:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        [data-theme="dark"] .model-dropdown:focus {
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+        }
+        
+        .dropdown-arrow {
+            transition: transform var(--transition-speed);
+            color: var(--text-secondary);
+        }
+        
+        .model-dropdown:hover .dropdown-arrow {
+            color: var(--accent-color);
+        }
+        
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+        
+        #userInput {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: all var(--transition-speed);
+            background: var(--sidebar-bg);
+            color: var(--text-primary);
+        }
+        
+        #userInput:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        [data-theme="dark"] #userInput:focus {
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+        }
+        
+        .send-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .send-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Markdown styling */
+        .message-content h1, 
+        .message-content h2, 
+        .message-content h3 {
+            margin-top: 0.5rem;
+            margin-bottom: 0.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .message-content h1 {
+            font-size: 1.5rem;
+        }
+        
+        .message-content h2 {
+            font-size: 1.3rem;
+        }
+        
+        .message-content h3 {
+            font-size: 1.1rem;
+        }
+        
+        .message-content p {
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
+        }
+        
+        .message-content code {
+            background: var(--hover-color);
+            color: #dc2626;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        [data-theme="dark"] .message-content code {
+            color: #f87171;
+        }
+        
+        .message-content pre {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        [data-theme="dark"] .message-content pre {
+            background: #0f172a;
+        }
+        
+        .message-content pre code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        
+        /* Blur effect when sidebar is open */
+        .app-main.blur {
+            filter: blur(3px);
+            pointer-events: none;
+        }
+        
+        /* Theme notification */
+        .theme-notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: var(--sidebar-bg);
+            color: var(--text-primary);
+            padding: 12px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px var(--shadow-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .theme-notification.show {
+            transform: translateX(0);
+        }
+        
+        .theme-notification i {
+            font-size: 1.2rem;
+            color: var(--accent-color);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .app-header, .app-footer {
+                padding: 0 15px;
+            }
+            
+            .logo {
+                font-size: 1.2rem;
+            }
+            
+            .sidebar {
+                width: 280px;
+            }
+            
+            .app-main {
+                padding: 0; /* no padding on mobile to allow full width */
+            }
+            
+            .chat-container {
+                padding: 0; /* full width container */
+            }
+            
+            .chat-messages {
+                padding: 2px 2px; /* minimal padding */
+            }
+            
+            .app-footer {
+                height: auto;
+                padding: 15px;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            
+            .model-selector {
+                min-width: 150px;
+            }
+            
+            .message {
+                max-width: 95%;
+            }
+            
+            .theme-toggle {
+                width: 50px;
+                height: 26px;
+            }
+            
+            .theme-slider {
+                height: 20px;
+                width: 20px;
+            }
+            
+            [data-theme="dark"] .theme-slider {
+                transform: translateX(24px);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.1rem;
+            }
+            
+            .app-main {
+                padding: 0; /* full width - no padding */
+            }
+            
+            .chat-container {
+                padding: 0; /* full width container */
+            }
+            
+            .chat-messages {
+                padding: 2px 2px; /* minimal padding */
+            }
+            
+            .app-footer {
+                flex-direction: row; /* keep input and send on same row */
+                align-items: center;
+                height: auto;
+                gap: 10px;
+            }
 
-	<style>
-		body {
-			background: linear-gradient(135deg, #667eea, #764ba2);
-			min-height: 100vh;
-			color: #fff;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-family: 'Segoe UI', sans-serif;
-		}
-		.chat-container {
-			width: 100%;
-			max-width: 650px;
-			background: #fff;
-			border-radius: 15px;
-			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-			overflow: hidden;
-			color: #000;
-		}
-		.chat-header {
-			background: #5a67d8;
-			padding: 15px;
-			color: #fff;
-			text-align: center;
-			font-size: 1.4rem;
-			font-weight: bold;
-		}
-		.chat-messages {
-			height: 450px;
-			overflow-y: auto;
-			padding: 20px;
-			background-color: #f7f9fc;
-		}
-		.message {
-			display: flex;
-			margin-bottom: 15px;
-			align-items: flex-start;
-		}
-		.message.bot .bubble {
-			background: #e2e8f0;
-			color: #1a202c;
-			border-radius: 15px 15px 15px 0;
-		}
-		.message.user .bubble {
-			background: #5a67d8;
-			color: #fff;
-			border-radius: 15px 15px 0 15px;
-			margin-left: auto;
-		}
-		.bubble {
-			padding: 10px 15px;
-			max-width: 75%;
-			word-wrap: break-word;
-			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-		}
-		.chat-input {
-			display: flex;
-			border-top: 1px solid #ccc;
-			padding: 10px;
-		}
-		.chat-input input {
-			flex: 1;
-			border: none;
-			padding: 10px;
-			border-radius: 10px;
-			margin-right: 10px;
-			background: #edf2f7;
-		}
-		.chat-input button {
-			background: #5a67d8;
-			color: white;
-			border: none;
-			padding: 10px 20px;
-			border-radius: 10px;
-			cursor: pointer;
-		}
-		.avatar {
-			width: 32px;
-			height: 32px;
-			border-radius: 50%;
-			margin-right: 10px;
-			margin-top: 5px;
-		}
-		.typing-indicator {
-			font-style: italic;
-			color: #888;
-			font-size: 0.9em;
-			margin-left: 10px;
-		}
+            .model-selector {
+                display: none; /* footer model selector removed */
+            }
 
-		/* Markdown Styling */
-		#chatBox .bubble h1, 
-		#chatBox .bubble h2, 
-		#chatBox .bubble h3 {
-			color: #2d3748;
-			margin-bottom: 0.5rem;
-			font-weight: bold;
-		}
-		#chatBox .bubble p {
-			margin-bottom: 0.5rem;
-		}
-		#chatBox .bubble code {
-			background: #f1f1f1;
-			color: #c7254e;
-			padding: 2px 5px;
-			border-radius: 4px;
-			font-family: monospace;
-		}
-		#chatBox .bubble pre {
-			background: #f7f7f7;
-			padding: 10px;
-			border-radius: 8px;
-			overflow-x: auto;
-		}
-		#chatBox .bubble pre code {
-			background: transparent;
-			color: #333;
-			padding: 0;
-		}
-		#chatBox .bubble ul {
-			padding-left: 20px;
-			margin-bottom: 1rem;
-		}
-		#chatBox .bubble li {
-			margin-bottom: 5px;
-		}
-	</style>
+            .input-wrapper {
+                width: auto;
+                flex: 1;
+            }
+
+            .send-btn {
+                width: auto;
+                padding: 12px 14px; /* smaller padding to fit */
+                min-width: 48px;
+                justify-content: center;
+            }
+
+            /* Hide the send text on very small screens, keep icon only */
+            .send-text { display: none; }
+            
+            .message {
+                max-width: 100%;
+            }
+            
+            .bubble {
+                padding: 12px 16px;
+            }
+            
+            .theme-notification {
+                top: 90px;
+                right: 10px;
+                left: 10px;
+                text-align: center;
+            }
+        }
+        
+        /* Animation for new messages */
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .message.bot {
+            animation: slideInLeft 0.3s ease-out;
+        }
+        
+        .message.user {
+            animation: slideInRight 0.3s ease-out;
+        }
+    </style>
 </head>
 <body>
-	<div class="chat-container">
-		<div class="chat-header">💬 Fancy ChatBot</div>
-		<div class="chat-messages" id="chatBox"></div>
-		<div class="chat-input">
-			<input type="text" id="userInput" placeholder="Type your message..." />
-			<button onclick="sendMessage()">Send</button>
-		</div>
-	</div>
+    <!-- Theme notification -->
+    <div class="theme-notification" id="themeNotification">
+        <i class="fas fa-moon" id="themeNotificationIcon"></i>
+        <span id="themeNotificationText">Chuyển sang chế độ tối</span>
+    </div>
+    
+    <!-- Main App Container -->
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <button class="menu-btn" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="logo">
+                    <i class="fas fa-robot"></i>
+                    <span>Fancy AI</span>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <div class="theme-toggle" onclick="toggleTheme()">
+                    <div class="theme-slider">
+                        <i class="fas fa-sun theme-icon sun-icon"></i>
+                        <i class="fas fa-moon theme-icon moon-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Sidebar Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        
+        <!-- Sidebar Menu -->
+        <nav class="sidebar" id="sidebar">
+            <!-- Sidebar header removed (title/subtitle not needed) -->
+            
+            <div class="sidebar-content">
+                <div class="menu-section">
+                    <h4 class="menu-section-title">Mô hình AI</h4>
+                    <a href="#" class="menu-item active" onclick="selectModel('auto')">
+                        <i class="fas fa-random"></i>
+                        <span class="menu-item-text">🎲 Auto (Random AI)</span>
+                    </a>
+                    <a href="#" class="menu-item" onclick="selectModel('grok')">
+                        <i class="fas fa-brain"></i>
+                        <span class="menu-item-text">🤖 GROK Assistant</span>
+                    </a>
+                    <a href="#" class="menu-item" onclick="selectModel('gpt5')">
+                        <i class="fas fa-robot"></i>
+                        <span class="menu-item-text">🧠 GPT-5 Ultra</span>
+                    </a>
+                    <a href="#" class="menu-item" onclick="selectModel('gemini')">
+                        <i class="fas fa-gem"></i>
+                        <span class="menu-item-text">✨ Gemini Pro</span>
+                    </a>
+                </div>
+                
+                <div class="menu-section">
+                    <h4 class="menu-section-title">Chức năng</h4>
+                    <a href="#" class="menu-item" onclick="clearChat()">
+                        <i class="fas fa-trash"></i>
+                        <span class="menu-item-text">Xóa cuộc trò chuyện</span>
+                    </a>
+                    <a href="#" class="menu-item" onclick="exportChat()">
+                        <i class="fas fa-download"></i>
+                        <span class="menu-item-text">Xuất chat</span>
+                    </a>
+                    <a href="#" class="menu-item" onclick="showSettings()">
+                        <i class="fas fa-cog"></i>
+                        <span class="menu-item-text">Cài đặt</span>
+                    </a>
+                </div>
+                
+                <div class="menu-section">
+                    <h4 class="menu-section-title">Trợ giúp</h4>
+                    <a href="#" class="menu-item" onclick="showHelp()">
+                        <i class="fas fa-question-circle"></i>
+                        <span class="menu-item-text">Hướng dẫn sử dụng</span>
+                    </a>
+                    <a href="#" class="menu-item" onclick="showAbout()">
+                        <i class="fas fa-info-circle"></i>
+                        <span class="menu-item-text">Giới thiệu</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="sidebar-footer">
+                <p>Fancy ChatBot AI © 2023<br>Phiên bản 2.0.0</p>
+            </div>
+        </nav>
+        
+        <!-- Main Content -->
+        <main class="app-main" id="appMain">
+            <div class="chat-container">
+                <div class="chat-messages" id="chatBox">
+                    <!-- Initial welcome message -->
+                    <div class="message bot">
+                        <div class="avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="bubble">
+                            <div class="message-content">
+                                <p>👋 <strong>Xin chào! Tôi là Fancy ChatBot AI</strong></p>
+                                <p>Tôi có thể trả lời câu hỏi của bạn qua nhiều mô hình AI khác nhau. Vui lòng chọn một AI từ menu bên trái hoặc để chế độ <strong>Auto</strong> để tôi tự động chọn mô hình phù hợp nhất.</p>
+                                <p>Bạn có thể chuyển đổi giữa chế độ sáng và tối bằng nút ở góc trên bên phải.</p>
+                                <p>Hãy thử hỏi tôi bất cứ điều gì!</p>
+                            </div>
+                            <div class="message-time">Bây giờ</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="input-wrapper">
+                <input type="text" id="userInput" placeholder="Nhập tin nhắn của bạn tại đây..." autocomplete="off" />
+            </div>
+            
+            <button class="send-btn" onclick="sendMessage()">
+                <i class="fas fa-paper-plane"></i>
+                <span class="send-text">Gửi</span>
+            </button>
+        </footer>
+    </div>
 
-	<script>
-		const chatBox = document.getElementById('chatBox');
+    <script>
+        // DOM elements
+        const chatBox = document.getElementById('chatBox');
+        const userInput = document.getElementById('userInput');
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const appMain = document.getElementById('appMain');
+        const themeNotification = document.getElementById('themeNotification');
+        const themeNotificationIcon = document.getElementById('themeNotificationIcon');
+        const themeNotificationText = document.getElementById('themeNotificationText');
+        
+        let currentChatbot = 'auto';
+        let isSidebarOpen = false;
+        
+        // Theme management
+        const THEMES = {
+            LIGHT: 'light',
+            DARK: 'dark'
+        };
+        
+        // Initialize theme from localStorage or system preference
+        function initTheme() {
+            const savedTheme = localStorage.getItem('chatbot-theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme) {
+                setTheme(savedTheme);
+            } else if (systemPrefersDark) {
+                setTheme(THEMES.DARK);
+            } else {
+                setTheme(THEMES.LIGHT);
+            }
+        }
+        
+        // Set theme
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('chatbot-theme', theme);
+            
+            // Update highlight.js theme
+            updateHighlightTheme(theme);
+            
+            // Show notification
+            showThemeNotification(theme);
+        }
+        
+        // Toggle theme between light and dark
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === THEMES.DARK ? THEMES.LIGHT : THEMES.DARK;
+            setTheme(newTheme);
+        }
+        
+        // Update highlight.js theme based on current theme
+        function updateHighlightTheme(theme) {
+            const link = document.querySelector('link[href*="highlight.js"]');
+            if (link) {
+                if (theme === THEMES.DARK) {
+                    link.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css';
+                } else {
+                    link.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-light.min.css';
+                }
+            }
+        }
+        
+        // Show theme change notification
+        function showThemeNotification(theme) {
+            if (theme === THEMES.DARK) {
+                themeNotificationIcon.className = 'fas fa-moon';
+                themeNotificationText.textContent = 'Đã chuyển sang chế độ tối';
+            } else {
+                themeNotificationIcon.className = 'fas fa-sun';
+                themeNotificationText.textContent = 'Đã chuyển sang chế độ sáng';
+            }
+            
+            themeNotification.classList.add('show');
+            
+            setTimeout(() => {
+                themeNotification.classList.remove('show');
+            }, 2000);
+        }
+        
+        // Sidebar toggle
+        function toggleSidebar() {
+            isSidebarOpen = !isSidebarOpen;
+            
+            if (isSidebarOpen) {
+                sidebar.classList.add('open');
+                sidebarOverlay.classList.add('open');
+                appMain.classList.add('blur');
+            } else {
+                sidebar.classList.remove('open');
+                sidebarOverlay.classList.remove('open');
+                appMain.classList.remove('blur');
+            }
+        }
+        
+        // Close sidebar when clicking overlay
+        sidebarOverlay.addEventListener('click', function() {
+            if (isSidebarOpen) {
+                toggleSidebar();
+            }
+        });
+        
+        // Model selection functions
+        function selectModel(model) {
+            currentChatbot = model;
+            
+            // Update active menu item
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Find and activate the selected menu item
+            const menuItems = document.querySelectorAll('.menu-item');
+            for (let item of menuItems) {
+                if (item.getAttribute('onclick') && item.getAttribute('onclick').includes(`'${model}'`)) {
+                    item.classList.add('active');
+                    break;
+                }
+            }
+            
+            // Determine model name for notifications
+            let modelName = "🎲 Auto (Random AI)";
+            if (model === 'grok') modelName = "🤖 GROK Assistant";
+            else if (model === 'gpt5') modelName = "🧠 GPT-5 Ultra";
+            else if (model === 'gemini') modelName = "✨ Gemini Pro";
 
-		marked.setOptions({
-			highlight: function (code, lang) {
-				return hljs.highlightAuto(code, [lang]).value;
-			}
-		});
-
-		function addMessage(content, sender = 'bot') {
-			const messageEl = document.createElement('div');
-			messageEl.className = `message ${sender}`;
-			const avatarSrc =
-				sender === 'user'
-					? 'https://i.pravatar.cc/32?img=3'
-					: 'https://cdn-icons-png.flaticon.com/512/4712/4712109.png';
-			messageEl.innerHTML = `
-				<img src="${avatarSrc}" class="avatar" />
-				<div class="bubble">${marked.parse(content)}</div>
-			`;
-			chatBox.appendChild(messageEl);
-			chatBox.scrollTop = chatBox.scrollHeight;
-			hljs.highlightAll();
-		}
-
-		function showTyping() {
-			const typing = document.createElement('div');
-			typing.id = 'typing';
-			typing.className = 'message bot';
-			typing.innerHTML = `
-				<img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png" class="avatar" />
-				<div class="bubble typing-indicator">Typing...</div>
-			`;
-			chatBox.appendChild(typing);
-			chatBox.scrollTop = chatBox.scrollHeight;
-		}
-
-		function removeTyping() {
-			const typing = document.getElementById('typing');
-			if (typing) typing.remove();
-		}
-
-		async function sendMessage() {
-			const input = document.getElementById('userInput');
-			const text = input.value.trim();
-			if (!text) return;
-			addMessage(text, 'user');
-			input.value = '';
-			showTyping();
-
-			try {
-				const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-					method: 'POST',
-					headers: {
-						Authorization: 'Bearer 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',
-						'HTTP-Referer': 'https://next-js-firm.vercel.app',
-						'X-Title': 'Firm',
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({
-						model: 'x-ai/grok-4.1-fast:free',
-						messages: [{ role: 'user', content: text }],
-					}),
-				});
-				const data = await response.json();
-				removeTyping();
-				const message = data.choices?.[0]?.message?.content || 'No response received.';
-				addMessage(message, 'bot');
-			} catch (err) {
-				removeTyping();
-				addMessage('Error: ' + err.message, 'bot');
-			}
-		}
-	</script>
+            // Add notification message (no footer dropdown to update)
+            addMessage(`Đã chuyển sang chế độ: <strong>${modelName}</strong>. Bạn có thể bắt đầu trò chuyện ngay bây giờ!`, 'bot');
+            
+            console.log('%c[MODEL SWITCH]', 'color: #FF6B6B; font-weight: bold;', {
+                model: currentChatbot,
+                timestamp: new Date().toLocaleTimeString()
+            });
+        }
+        
+        // Footer dropdown removed: no dropdown-related event listeners required
+        
+        // Configure marked for markdown parsing
+        marked.setOptions({
+            highlight: function(code, lang) {
+                if (lang && hljs.getLanguage(lang)) {
+                    return hljs.highlight(code, { language: lang }).value;
+                }
+                return hljs.highlightAuto(code).value;
+            },
+            breaks: true,
+            gfm: true
+        });
+        
+        // Get random chatbot for auto mode
+        function getRandomChatbot() {
+            const bots = ['grok', 'gpt5', 'gemini'];
+            return bots[Math.floor(Math.random() * bots.length)];
+        }
+        
+        // Add message to chat
+        function addMessage(content, sender = 'bot') {
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${sender}`;
+            
+            // Get current time
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+            
+            // Parse markdown if from bot
+            let parsedContent = content;
+            if (sender === 'bot') {
+                parsedContent = marked.parse(content);
+            }
+            
+            // Create avatar icon based on sender
+            let avatarIcon = 'fas fa-robot';
+            let avatarText = 'AI';
+            if (sender === 'user') {
+                avatarIcon = 'fas fa-user';
+                avatarText = 'Bạn';
+            }
+            
+            messageEl.innerHTML = `
+                <div class="avatar">
+                    <i class="${avatarIcon}"></i>
+                </div>
+                <div class="bubble">
+                    <div class="message-content">${parsedContent}</div>
+                    <div class="message-time">${timeString}</div>
+                </div>
+            `;
+            
+            chatBox.appendChild(messageEl);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            
+            // Re-initialize syntax highlighting
+            if (sender === 'bot') {
+                setTimeout(() => {
+                    document.querySelectorAll('pre code').forEach((block) => {
+                        hljs.highlightElement(block);
+                    });
+                }, 100);
+            }
+        }
+        
+        // Show typing indicator
+        function showTyping() {
+            const typingEl = document.createElement('div');
+            typingEl.id = 'typingIndicator';
+            typingEl.className = 'message bot';
+            typingEl.innerHTML = `
+                <div class="avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            `;
+            chatBox.appendChild(typingEl);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+        
+        // Remove typing indicator
+        function removeTyping() {
+            const typingEl = document.getElementById('typingIndicator');
+            if (typingEl) {
+                typingEl.remove();
+            }
+        }
+        
+        // Send message function
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+            
+            // Add user message
+            addMessage(text, 'user');
+            userInput.value = '';
+            
+            // Show typing indicator
+            showTyping();
+            
+            try {
+                // Prepare request body
+                let requestBody = {
+                    chatbot: currentChatbot,
+                    messages: [{ role: 'user', content: text }],
+                };
+                
+                // If in auto mode, pick a random chatbot for this message
+                if (currentChatbot === 'auto') {
+                    const chosen = getRandomChatbot();
+                    requestBody.clientChosen = chosen;
+                    
+                    console.log('%c[AUTO PICK]', 'color: #FFD166; font-weight: bold;', { 
+                        chosen, 
+                        timestamp: new Date().toLocaleTimeString() 
+                    });
+                }
+                
+                console.log('%c[REQUEST SENT]', 'color: #4ECDC4; font-weight: bold;', {
+                    chatbot: currentChatbot,
+                    message: text.substring(0, 50) + (text.length > 50 ? '...' : ''),
+                    mode: currentChatbot === 'auto' ? 'random-select' : 'manual-select',
+                    timestamp: new Date().toLocaleTimeString()
+                });
+                
+                // Send request to API
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestBody),
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    console.log('%c[RESPONSE SUCCESS]', 'color: #95E1D3; font-weight: bold;', {
+                        chatbot: currentChatbot,
+                        status: response.status,
+                        timestamp: new Date().toLocaleTimeString()
+                    });
+                    
+                    removeTyping();
+                    
+                    // Get response text
+                    const message = data.choices?.[0]?.message?.content || 
+                                   data.response || 
+                                   'Xin lỗi, tôi không thể tạo phản hồi ngay bây giờ. Vui lòng thử lại.';
+                    
+                    // Add bot message
+                    addMessage(message, 'bot');
+                    
+                } else {
+                    console.error('%c[RESPONSE ERROR]', 'color: #FF6B6B; font-weight: bold;', {
+                        chatbot: currentChatbot,
+                        status: response.status,
+                        error: data.error,
+                        timestamp: new Date().toLocaleTimeString()
+                    });
+                    
+                    removeTyping();
+                    addMessage(`Lỗi: ${data.error || 'Không thể kết nối đến máy chủ AI'}`, 'bot');
+                }
+                
+            } catch (err) {
+                console.error('%c[FETCH ERROR]', 'color: #FF6B6B; font-weight: bold;', {
+                    chatbot: currentChatbot,
+                    error: err.message,
+                    timestamp: new Date().toLocaleTimeString()
+                });
+                
+                removeTyping();
+                
+                // Fallback responses when API is not available
+                const fallbackResponses = [
+                    "Tôi hiện đang gặp sự cố kết nối với máy chủ AI. Vui lòng thử lại sau!",
+                    "Xin lỗi, tôi không thể kết nối đến dịch vụ AI ngay bây giờ. Đây là một câu trả lời mẫu: Dựa trên câu hỏi của bạn, tôi khuyên bạn nên thử tìm kiếm thông tin từ các nguồn đáng tin cậy.",
+                    "Kết nối đến AI hiện không khả dụng. Trong khi chờ đợi, bạn có thể thử hỏi lại sau hoặc tìm kiếm thông tin từ các nguồn khác."
+                ];
+                
+                const randomResponse = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+                addMessage(randomResponse, 'bot');
+            }
+        }
+        
+        // Menu functions
+        function clearChat() {
+            if (confirm("Bạn có chắc chắn muốn xóa toàn bộ cuộc trò chuyện?")) {
+                chatBox.innerHTML = '';
+                addMessage("Cuộc trò chuyện đã được xóa. Tôi là Fancy ChatBot AI, bạn muốn hỏi gì?", 'bot');
+            }
+            toggleSidebar();
+        }
+        
+        function exportChat() {
+            alert("Chức năng xuất chat sẽ được thêm trong phiên bản tiếp theo!");
+            toggleSidebar();
+        }
+        
+        function showSettings() {
+            alert("Chức năng cài đặt sẽ được thêm trong phiên bản tiếp theo!");
+            toggleSidebar();
+        }
+        
+        function showHelp() {
+            alert("Hướng dẫn sử dụng:\n\n1. Chọn mô hình AI từ menu bên trái\n2. Nhập câu hỏi vào ô nhập liệu\n3. Nhấn Enter hoặc nút Gửi để gửi tin nhắn\n4. Sử dụng nút chuyển đổi chế độ sáng/tối ở header\n5. Menu cung cấp thêm các chức năng khác");
+            toggleSidebar();
+        }
+        
+        function showAbout() {
+            alert("Fancy ChatBot AI\n\nPhiên bản: 2.0.0\nMô tả: Trợ lý AI đa mô hình với giao diện hiện đại\nHỗ trợ: GROK, GPT-5, Gemini\n© 2023 Fancy AI Team");
+            toggleSidebar();
+        }
+        
+        // Allow sending message with Enter key
+        userInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            // Only auto-change if user hasn't set a preference
+            if (!localStorage.getItem('chatbot-theme')) {
+                const newTheme = e.matches ? THEMES.DARK : THEMES.LIGHT;
+                setTheme(newTheme);
+            }
+        });
+        
+        // Initialize on page load
+        window.addEventListener('load', function() {
+            // Initialize theme
+            initTheme();
+            
+            // Set up menu toggle
+            menuToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleSidebar();
+            });
+            
+            console.log('%c[PAGE LOADED - FULLSCREEN MODE]', 'color: #4ECDC4; font-weight: bold;', {
+                mode: 'fullscreen',
+                description: 'Fullscreen layout with sidebar menu',
+                timestamp: new Date().toLocaleTimeString()
+            });
+            
+            // Focus on input field
+            userInput.focus();
+            
+            // Add welcome message about theme
+            setTimeout(() => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const themeName = currentTheme === THEMES.DARK ? 'tối' : 'sáng';
+                console.log('%c[THEME INITIALIZED]', 'color: #8B5CF6; font-weight: bold;', {
+                    theme: currentTheme,
+                    themeName: themeName,
+                    timestamp: new Date().toLocaleTimeString()
+                });
+            }, 500);
+        });
+        
+        // Style for dropdown items
+        const style = document.createElement('style');
+        style.textContent = `
+            .dropdown-item {
+                padding: 12px 15px;
+                cursor: pointer;
+                transition: background-color var(--transition-speed);
+                color: var(--text-primary);
+                border-bottom: 1px solid var(--border-color);
+            }
+            
+            .dropdown-item:last-child {
+                border-bottom: none;
+            }
+            
+            .dropdown-item:hover {
+                background-color: var(--hover-color);
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
